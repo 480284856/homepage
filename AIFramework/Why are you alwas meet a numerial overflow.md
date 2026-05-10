@@ -2,7 +2,7 @@ Let's talk about why neural networks encounter numerical explosions during train
 
 We'll use linear regression as an example, as shown in the figure:
 
-![image](ZZImages/Why%20are%20you%20alwas%20meet%20a%20numerial%20overflow-1.png)
+![image](https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Why%20are%20you%20alwas%20meet%20a%20numerial%20overflow-1.png)
 
 This example shows the first two linear layers of a neural network. The first layer has two input neurons and two output neurons; the second layer is the output layer, with two input neurons and one output neuron. Here, the squares represent logits, and the small circles represent activation values.
 
