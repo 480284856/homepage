@@ -28,4 +28,17 @@ Then we continue backpropagation further:
 
    (b) In other words, each column of the 4×2 matrix is multiplied by each row of the parameter matrix W, and then summed across columns.
 
-At this point, we can see that the already-doubled -242 has doubled again. Comparing the numbers from the partial derivative at the output layer's input to the ones at the previous layer's input, we can observe that after just walking through one layer, the delta has doubled. If the network is deeper, it is obvious that the delta will grow to an astronomical number. This causes the absolute values of the parameters to become extremely large when updating the network's weights.
+At this point, we can see that the already-doubled -242 has doubled again. Comparing the numbers from the partial derivative at the output layer's input to the ones at the previous layer's input, we can observe that after just walking through one layer, the delta has doubled. If the network is deeper, it is obvious that the delta will grow to an astronomical number. This causes the absolute values of the parameters to become extremely large when updating the network's weights. 
+
+Based on the analysis above, we can identify two main causes for numerical overflow:
+
+1. The initial delta data is too large.
+2. The initial parameters of the neural network are too large.
+
+![image-3](./ZZImages/Why%20are%20you%20alwas%20meet%20a%20numerial%20overflow-3.png)
+
+To address the first issue, in this specific example, the delta is large because the label values are very high. We can resolve this by applying normalization to those labels.
+
+Regarding the second issue of excessive parameter size, we can address this during initialization by multiplying the parameters by a small factor, such as 0.01 or 0.1, to reduce their scale.
+
+![image-4](./ZZImages/Why%20are%20you%20alwas%20meet%20a%20numerial%20overflow-4.png)

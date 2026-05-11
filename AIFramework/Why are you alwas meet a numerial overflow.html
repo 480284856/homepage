@@ -126,6 +126,30 @@
         This causes the absolute values of the parameters to become extremely large when updating the
         network's weights.
     </p>
+
+    <p>Based on the analysis above, we can identify two main causes for numerical overflow:</p>
+
+    <ol>
+        <li>The initial delta data is too large.</li>
+        <li>The initial parameters of the neural network are too large.</li>
+    </ol>
+
+    <img src="https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Why%20are%20you%20alwas%20meet%20a%20numerial%20overflow-3.png"
+        alt="Causes of numerical overflow">
+
+    <p>
+        To address the first issue, in this specific example, the delta is large because the label
+        values are very high. We can resolve this by applying normalization to those labels.
+    </p>
+
+    <p>
+        Regarding the second issue of excessive parameter size, we can address this during
+        initialization by multiplying the parameters by a small factor, such as 0.01 or 0.1, to
+        reduce their scale.
+    </p>
+
+    <img src="https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Why%20are%20you%20alwas%20meet%20a%20numerial%20overflow-4.png"
+        alt="Addressing numerical overflow">
 </body>
 
 </html>
