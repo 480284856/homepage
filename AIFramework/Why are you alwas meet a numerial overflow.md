@@ -6,7 +6,9 @@ We'll use linear regression as an example, as shown in the figure:
 
 This example shows the first two linear layers of a neural network. The first layer has two input neurons and two output neurons; the second layer is the output layer, with two input neurons and one output neuron. Here, the squares represent logits, and the small circles represent activation values.
 
-We assume a batch size of 4, and the derivatives of the loss function with respect to the output logits of the neural network are 121, 101, 74, and 47 — this is a 4×1 two-dimensional matrix. The parameters of the output layer form a 1×2 matrix with values -2 and 0.1. These numbers are real values taken from an actual project.
+We assume a batch size of 4, and the derivatives of the loss function with respect to the output logits of the neural network are 121, 101, 74, and 47 — this is a 4×1 two-dimensional matrix. The parameters of the output layer form a 1×2 matrix with values -2 and 0.1. These numbers are real values taken from an actual project:
+
+![immage](./ZZImages/Why%20are%20you%20alwas%20meet%20a%20numerial%20overflow-2.png)
 
 Now we compute a delta (δ), i.e., the partial derivative of the loss function with respect to the input of the output layer:
 1. It equals the partial derivative of the loss with respect to the network's output, multiplied by the corresponding parameter of the output layer's input.
