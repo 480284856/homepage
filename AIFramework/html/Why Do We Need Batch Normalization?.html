@@ -1,0 +1,84 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        ol {
+            padding-left: 20px;
+        }
+
+        ol li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Why Do We Need Batch Normalization?</h1>
+
+    <p>
+        Imagine a double-layer neural network where the input to the first layer is fixed. For example,
+        if we feed the entire dataset into the network at once, the data distribution remains the same
+        for each forward computation (or for the first linear layer). If the parameters of the first
+        linear layer keep the same, the output distribution of this linear layer also remains unchanged
+        and fixed.
+    </p>
+
+    <img src="https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Why%20Do%20We%20Need%20Batch%20Normalization-1.jpg"
+        alt="Double-layer neural network with fixed input distribution">
+
+    <p>
+        However, once we update the parameters, the output distribution changes. It shifts from one
+        place to another with every parameter update, for the bottom linear layer. This means its output
+        distribution is constantly shifting.
+    </p>
+
+    <img src="https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Why%20Do%20We%20Need%20Batch%20Normalization-2.jpg"
+        alt="Output distribution shifting after parameter update">
+
+    <p>
+        This creates a problem for the second linear layer. Because its input distribution is
+        inconsistent, for example, it might see data centered around a mean of 0 and variance of 1
+        the first time, move to around −1 the second time, and shift to around −5 the third time.
+    </p>
+
+    <p>
+        Consequently, it becomes very difficult for subsequent layers (the second layer here) to learn
+        anything useful. Unlike the first layer, which receives the entire dataset with a constant input
+        distribution, <b>the second layer's input is always changing</b>!
+    </p>
+
+    <p>
+        This is where Batch Normalization comes in. It functions by taking the shifting output
+        distributions from a linear layer and changing them into a fixed distribution. This ensures
+        that the linear layers (the second layer here) using the previous network's output as their
+        input receive a stable signal, which ultimately allows for better learning.
+    </p>
+</body>
+
+</html>
