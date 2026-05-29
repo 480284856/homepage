@@ -1,0 +1,249 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        .formula {
+            overflow-x: auto;
+            margin: 18px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Backpropagation of Multi-variable Chain Rule</h1>
+
+    <img src="https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Back%20propagation-multivariable%20chain%20rule.jpg"
+        alt="Backpropagation of multi-variable chain rule">
+
+    <p>
+        This article explains how gradients are backpropagated when a small change in one variable affects
+        multiple output neurons.
+    </p>
+
+    <p>
+        Let's say we have a neural network with 2 input neurons, multiple hidden layers with two neurons
+        each, and 1 output neuron.
+    </p>
+
+    <img src="https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Back%20propagation-multivariable%20chain%20rule-1.png"
+        alt="Neural network with two neurons in each hidden layer">
+
+    <p>
+        Now let's define the symbols of each neuron in the hidden layers. We define
+        $a^{(n)L}_i$ as the output of the $i$-th neuron in the $L$-th hidden layer in the
+        $n$-th batch. For example, as shown in the image above, $a^{(n)L}_1$ is the output of
+        the first neuron in the $L$-th hidden layer in the $n$-th batch, and $a^{(n)L}_2$ is
+        the output of the second neuron in the $L$-th hidden layer in the $n$-th batch.
+    </p>
+
+    <img src="https://raw.githubusercontent.com/480284856/homepage/main/AIFramework/ZZImages/Back%20propagation-multivariable%20chain%20rule-2.png"
+        alt="Definition of neuron symbols">
+
+    <p>Let's say we have the value matrix of each neuron in layer $M$:</p>
+
+    <div class="formula">
+        $$
+        V_M = \begin{bmatrix}
+        a^{(1)M}_{1} & a^{(1)M}_{2} \\
+        a^{(2)M}_{1} & a^{(2)M}_{2} \\
+        \vdots & \vdots \\
+        a^{(BS)M}_{1} & a^{(BS)M}_{2}
+        \end{bmatrix}
+        $$
+    </div>
+
+    <p>In my opinion, the loss function $L$ is a function of the value matrix $V_M$:</p>
+
+    <div class="formula">
+        $$
+        L(V_M): \mathbb{R}^{BS \times 2} \to \mathbb{R}
+        $$
+    </div>
+
+    <p>or:</p>
+
+    <div class="formula">
+        $$
+        L(V_M) = F(a^{(1)M}_{1}, a^{(1)M}_{2}, \cdots, a^{(BS)M}_{1}, a^{(BS)M}_{2})
+        $$
+    </div>
+
+    <p>
+        According to the rules of multivariable differentiation, the differential of a multivariable
+        function can be expressed as a linear combination of the differentials of all independent
+        variables, each multiplied by the function's partial derivative with respect to that specific
+        independent variable:
+    </p>
+
+    <div class="formula">
+        $$
+        dL(V_M) =
+        \frac{\partial L}{\partial a^{(1)M}_{1}} \Delta a^{(1)M}_{1}
+        + \frac{\partial L}{\partial a^{(1)M}_{2}} \Delta a^{(1)M}_{2}
+        + \cdots
+        + \frac{\partial L}{\partial a^{(BS)M}_{1}} \Delta a^{(BS)M}_{1}
+        + \frac{\partial L}{\partial a^{(BS)M}_{2}} \Delta a^{(BS)M}_{2}
+        $$
+    </div>
+
+    <p>
+        Now we look at the relationship between the values at layer $M$ and the values at layer $L$.
+        Assume that between layer $L$ and layer $M$, there is no activation function, or the activation
+        function is $y=x$.
+    </p>
+
+    <p>
+        Therefore, each neuron value in layer $M$ is a linear combination of all neuron values in
+        layer $L$ with the weights between them:
+    </p>
+
+    <div class="formula">
+        $$
+        \begin{align*}
+        \Delta a^{(1)M}_{1} &= \Delta a^{(1)L}_{1} w_{11} + \Delta a^{(1)L}_{2} w_{12} \\
+        \Delta a^{(1)M}_{2} &= \Delta a^{(1)L}_{1} w_{21} + \Delta a^{(1)L}_{2} w_{22} \\
+        \cdots \\
+        \Delta a^{(BS)M}_{1} &= \Delta a^{(BS)L}_{1} w_{11} + \Delta a^{(BS)L}_{2} w_{12} \\
+        \Delta a^{(BS)M}_{2} &= \Delta a^{(BS)L}_{1} w_{21} + \Delta a^{(BS)L}_{2} w_{22}
+        \end{align*}
+        $$
+    </div>
+
+    <p>
+        If we only change $\Delta a^{(1)L}_{1}$ a little bit, then only
+        $\Delta a^{(1)M}_{1}$ and $\Delta a^{(1)M}_{2}$ will change a little bit as well.
+        Other values, such as $\Delta a^{(2)M}_{1}$, $\Delta a^{(2)M}_{2}$,
+        $\Delta a^{(BS)M}_{1}$, and $\Delta a^{(BS)M}_{2}$, will not change at all.
+    </p>
+
+    <p>So, the differential of $L$, when only $\Delta a^{(1)L}_{1}$ changes a little bit, is:</p>
+
+    <div class="formula">
+        $$
+        \begin{align*}
+        \Delta L(V_M)
+        &= \frac{\partial L}{\partial a^{(1)M}_{1}} \Delta a^{(1)M}_{1}
+        + \frac{\partial L}{\partial a^{(1)M}_{2}} \Delta a^{(1)M}_{2} \\
+        &= \frac{\partial L}{\partial a^{(1)M}_{1}} w_{11} \Delta a^{(1)L}_{1}
+        + \frac{\partial L}{\partial a^{(1)M}_{2}} w_{21} \Delta a^{(1)L}_{1}
+        \end{align*}
+        $$
+    </div>
+
+    <p>Therefore, the derivative of $L$ with respect to $a^{(1)L}_{1}$ is:</p>
+
+    <div class="formula">
+        $$
+        \frac{\partial L}{\partial a^{(1)L}_{1}} =
+        \frac{\partial L}{\partial a^{(1)M}_{1}} w_{11}
+        + \frac{\partial L}{\partial a^{(1)M}_{2}} w_{21}
+        $$
+    </div>
+
+    <p>In the same way, for other variables at layer $L$, we have:</p>
+
+    <div class="formula">
+        $$
+        \begin{aligned}
+        \frac{\partial L}{\partial a^{(1)L}_{2}} &=
+        \frac{\partial L}{\partial a^{(1)M}_{1}} w_{12}
+        + \frac{\partial L}{\partial a^{(1)M}_{2}} w_{22} \\
+        \cdots \\
+        \frac{\partial L}{\partial a^{(BS)L}_{1}} &=
+        \frac{\partial L}{\partial a^{(BS)M}_{1}} w_{11}
+        + \frac{\partial L}{\partial a^{(BS)M}_{2}} w_{21} \\
+        \frac{\partial L}{\partial a^{(BS)L}_{2}} &=
+        \frac{\partial L}{\partial a^{(BS)M}_{1}} w_{12}
+        + \frac{\partial L}{\partial a^{(BS)M}_{2}} w_{22}
+        \end{aligned}
+        $$
+    </div>
+
+    <p>We can write them in matrix form:</p>
+
+    <div class="formula">
+        $$
+        \begin{bmatrix}
+        \frac{\partial L}{\partial a_1^{(1)L}} & \frac{\partial L}{\partial a_2^{(1)L}} \\
+        \frac{\partial L}{\partial a_1^{(2)L}} & \frac{\partial L}{\partial a_2^{(2)L}} \\
+        \vdots & \vdots \\
+        \frac{\partial L}{\partial a_1^{(BS)L}} & \frac{\partial L}{\partial a_2^{(BS)L}}
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+        \frac{\partial L}{\partial a_1^{(1)M}} W_{11} + \frac{\partial L}{\partial a_2^{(1)M}} W_{21}
+        &
+        \frac{\partial L}{\partial a_1^{(1)M}} W_{12} + \frac{\partial L}{\partial a_2^{(1)M}} W_{22} \\
+        \frac{\partial L}{\partial a_1^{(2)M}} W_{11} + \frac{\partial L}{\partial a_2^{(2)M}} W_{21}
+        &
+        \frac{\partial L}{\partial a_1^{(2)M}} W_{12} + \frac{\partial L}{\partial a_2^{(2)M}} W_{22} \\
+        \vdots & \vdots \\
+        \frac{\partial L}{\partial a_1^{(BS)M}} W_{11} + \frac{\partial L}{\partial a_2^{(BS)M}} W_{21}
+        &
+        \frac{\partial L}{\partial a_1^{(BS)M}} W_{12} + \frac{\partial L}{\partial a_2^{(BS)M}} W_{22}
+        \end{bmatrix}
+        $$
+    </div>
+
+    <p>Or, more concisely, as matrix multiplication:</p>
+
+    <div class="formula">
+        $$
+        \underbrace{
+        \begin{bmatrix}
+        \frac{\partial L}{\partial a_1^{(1)L}} & \frac{\partial L}{\partial a_2^{(1)L}} \\
+        \frac{\partial L}{\partial a_1^{(2)L}} & \frac{\partial L}{\partial a_2^{(2)L}} \\
+        \vdots & \vdots \\
+        \frac{\partial L}{\partial a_1^{(\text{BS})L}} & \frac{\partial L}{\partial a_2^{(\text{BS})L}}
+        \end{bmatrix}}_{\boldsymbol{\delta}^L}
+        =
+        \underbrace{
+        \begin{bmatrix}
+        \frac{\partial L}{\partial a_1^{(1)M}} & \frac{\partial L}{\partial a_2^{(1)M}} \\
+        \frac{\partial L}{\partial a_1^{(2)M}} & \frac{\partial L}{\partial a_2^{(2)M}} \\
+        \vdots & \vdots \\
+        \frac{\partial L}{\partial a_1^{(\text{BS})M}} & \frac{\partial L}{\partial a_2^{(\text{BS})M}}
+        \end{bmatrix}}_{\boldsymbol{\delta}^M}
+        \begin{bmatrix}
+        W_{11} & W_{12} \\
+        W_{21} & W_{22}
+        \end{bmatrix}
+        $$
+    </div>
+</body>
+
+</html>
