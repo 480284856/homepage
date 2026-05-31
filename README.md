@@ -12,3 +12,9 @@ Jay : hello world!
 - 05/09/2026
   - [Why do you always meet a numerial overflow?](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/AIFramework/html/Why%20do%20you%20always%20meet%20a%20numerial%20overflow.html)
 
+---
+
+# Diary
+
+- [2026-05-31-RL-World Model Inspired Decision Making Algorithm](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/World%20Model%20Inspired%20Decision%20Making%20Algorithm.html)
+

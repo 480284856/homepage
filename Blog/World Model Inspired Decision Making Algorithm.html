@@ -1,0 +1,48 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>World Model Inspired Decision Making Algorithm</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>World Model Inspired Decision Making Algorithm</h1>
+
+    <img src="world_model_decision_making.png" alt="World Model Inspired Decision Making Process Diagram">
+
+    <p>
+        As announced in the official website of Advanced Machine Intelligence (AMI) co-founded by Yann LeCun, an action-conditioned world model is trained to be able to predict(or imagine) the consequence of its action, which gives it the ability of planning action sequences to accomplish a task.
+    </p>
+
+    <p>
+        The statement inspired me: As far I know about RL, the policy is to make decision ONLY based on current state: P(a|s), though in NLP the "s" is a bit longer. It's first order Markov Chain. What if the model makes decision based on BOTH past and future? Of course, the "future" is imagined future. For example, before the policy choose action "go ahead", how about let the model complete the possible consequence, and the policy make final decision based on "s" and imagined "s'"?
+    </p>
+</body>
+
+</html>
