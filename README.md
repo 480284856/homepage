@@ -16,5 +16,7 @@ Jay : hello world!
 
 # Diary
 
+- [2026-06-10-DL-Optimize with Curvature Information](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/optimize%20with%20curvature%20infomation.html)
 - [2026-05-31-RL-World Model Inspired Decision Making Algorithm](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/World%20Model%20Inspired%20Decision%20Making%20Algorithm.html)
+
 
