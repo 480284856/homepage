@@ -1,0 +1,65 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Unbinding the Attention Budget: Rethinking Softmax in Self-Attention</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Unbinding the Attention Budget: Rethinking Softmax in Self-Attention</h1>
+
+    <img src="attention_budget.jpg" alt="Sigmoid vs Softmax Attention Budget Illustration">
+
+    <p>
+        In standard self-attention mechanisms, the attention scores are normalized using the softmax function. By definition, this allocates a fixed "attention budget" for each token—meaning the attention weights assigned to all other tokens (including itself) must sum to exactly 1. While this sum-to-one constraint might help maintain numerical stability and prevents activation values from exploding, it also introduces a limitation.
+    </p>
+
+    <p>
+        Imagine a scenario where a token needs to aggregate information from its context. If multiple surrounding tokens contain highly critical, complementary information that the current token wants to fully absorb, the softmax normalization acts as a bottleneck. It artificially constrains the representation capacity by forcing the token to distribute its limited attention budget.
+    </p>
+
+    <p>
+        For example, consider the sentence <strong>"I am a student and a Chinese"</strong> and focus on the modeling of the token <strong>"I"</strong>. Here, the tokens <strong>"student"</strong> and <strong>"Chinese"</strong> are both highly important and informative for representing <strong>"I"</strong>. However, under the softmax constraint, the token <strong>"I"</strong> can allocate at most a fraction of its attention budget (e.g., 30% each) to these crucial context tokens, as the remaining budget is split across other tokens and itself.
+    </p>
+
+    <p>
+        What if we removed this sum-to-one constraint and instead bound the attention of each token pair to a local range of [0, 1] (where 0 means complete disregard and 1 means maximum importance)? By applying an independent activation (such as a sigmoid function) to each attention score rather than softmax, a token could freely import all relevant information from multiple key sources simultaneously without dilution.
+    </p>
+
+    <p>
+        Although removing softmax could lead to numerical instability or exploding activations, we can mitigate this issue by applying standard normalization techniques elsewhere in the block—such as <strong>Batch Normalization (BN)</strong> or <strong>Layer Normalization (LN)</strong>—to stabilize the outputs.
+    </p>
+</body>
+
+</html>
