@@ -1,0 +1,97 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Accelerating Optimization: Combining Newton's Method with SGD</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Accelerating Optimization: Combining Newton's Method with SGD</h1>
+
+    <img src="newton_sgd.jpg" alt="Newton's Method vs Newton + SGD Comparison Diagram">
+
+    <p>
+        It is well known that Newton's method can converge to the minimum of a quadratic function in a single step due to its usage of second-order derivative (curvature) information. Captivated by this rapid convergence, I conceived a hybrid optimization approach:
+    </p>
+
+    <p>
+        What if we directly descend from our starting position to a local minimum in a single step using Newton's method, and then perform several steps of Stochastic Gradient Descent (SGD) to escape that local basin? Once the model escapes, we apply Newton's method again to instantly jump to the next local minimum.
+    </p>
+
+    <p>
+        The proposed optimization loop proceeds as follows:
+    </p>
+
+    <ol>
+        <li><strong>Newton Step:</strong> Use Newton's method (incorporating Hessian information) to jump directly to the local minimum of the current basin in a single step.</li>
+        <li><strong>SGD Exploration:</strong> Perform a number of SGD updates to inject noise and escape the current local basin.</li>
+        <li><strong>Newton Step:</strong> Apply Newton's method again to converge immediately to the next local minimum.</li>
+        <li><strong>Repeat:</strong> Iterate this loop throughout training.</li>
+    </ol>
+
+    <p>
+        As illustrated in the diagram, standard SGD requires many small, incremental steps to traverse valleys and reach the minimum, whereas the hybrid <strong>"Newton + SGD"</strong> approach can navigate the optimization landscape much faster.
+    </p>
+
+    <h3>The Challenge: Selecting the Right Number of SGD Steps</h3>
+
+    <p>
+        However, a key challenge of this method is determining the optimal number of SGD steps to perform after each Newton update.
+    </p>
+
+    <p>
+        Looking at the diagram, if we only apply a single SGD step (from left to right):
+    </p>
+
+    <ol>
+        <li>The <strong>second point</strong> (red) represents the local minimum reached after the first Newton step.</li>
+        <li>The <strong>third point</strong> (red) is the position after exactly one SGD update.</li>
+    </ol>
+
+    <p>
+        From this third point, it is clear that the optimizer is still within the attractive basin of the second point. If we were to immediately apply Newton's method again, the step would simply bring the model right back to the second point (the local minimum we just escaped). Therefore, we must apply multiple SGD steps to ensure the model travels far enough to enter a new basin before invoking Newton's method again.
+    </p>
+</body>
+
+</html>
