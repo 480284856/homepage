@@ -2,6 +2,14 @@ Jay : hello world!
 
 ---
 
+# Projects
+
+- 2026-07-05
+  - [Building Energy Performance Prediction: A Data-Centric AI Approach](Projects/building-energy-performance-prediction/eai-report.pdf)
+  - Built a feature-engineering pipeline for Chicago building GHG emission prediction. The automatic, feature-agnostic model improved test R2 from 0.5323 to 0.6882 and reduced test MAE from 869.86 to 756.68 tonnes CO2e.
+
+---
+
 
 # AIFramework
 
@@ -20,6 +28,4 @@ Jay : hello world!
 - [2026-06-10-DL-Unbinding the Attention Budget: Rethinking Softmax in Self-Attention](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/unbinding%20the%20attention%20budget/unbinding%20the%20attention%20budget.html)
 - [2026-06-10-DL-Optimize with Curvature Information](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/optimize%20with%20curvature%20infomation/optimize%20with%20curvature%20infomation.html)
 - [2026-05-31-RL-World Model Inspired Decision Making Algorithm](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/World%20Model%20Inspired%20Decision%20Making%20Algorithm/World%20Model%20Inspired%20Decision%20Making%20Algorithm.html)
-
-
 
