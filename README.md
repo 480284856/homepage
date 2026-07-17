@@ -1,4 +1,7 @@
-Jay : hello world!
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+  <span>Jay : hello world!</span>
+  <a href="academic-transcript.pdf" style="display: inline-block; padding: 0.65rem 1rem; border: 1px solid #1f6feb; border-radius: 6px; font-weight: 600; text-decoration: none; white-space: nowrap;">Academic Transcript</a>
+</div>
 
 ---
 
