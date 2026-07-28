@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RL-based Live Hyperparameter Tuning</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-top: 36px;
+            margin-bottom: 18px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+    <h1>RL-based Live Hyperparameter Tuning</h1>
+
+    <img src="RL-based Live Hyperparameter Tuning.jpg" alt="RL-based Live Hyperparameter Tuning">
+
+    <h2>The story</h2>
+
+    <p>
+        Current SFT methods based on backpropagation are significant invention in AI, they made great contribution to supervise models' learning, but for themselves, <strong>there is no supervisor to supervise the algorithms</strong>. For example, full batch Gradient Descent is a heuristic algorithm that only knows to move parameters in the inversed direction of gradient, easy to get stuck at local minima. Later, we have SGD, but it's not intelligent, even though it helps models escape the local minimum by the unstable gradient direction. SGD doesn't know which direction is the best direction because it just randomly picks a direction under the limitation that the expectation of the gradient direction is the one of the full batch gradient.
+    </p>
+
+    <p>
+        I think the fundamental reason that the optimizers are heuristic algorithms is because we don't know the shape of the loss curve of the model. Let's imagine if we know the shape—if we know what the loss curve looks like—we can solve and get the optimal parameter of the model in O(1) time complexity just by seeing the curve and find the global minima. In reinforcement learning, we have model-based RL algorithms, so here comes the inspiration: <strong>what if we model the loss curve</strong>? If we know the landscape of the loss curve, we know which one is the local minimum, and we know the position of our model on the loss curve so that we can guide our model to the global minimum.
+    </p>
+
+    <p>
+        For simplicity and manifesting, let's talk about hyperparameter tuning. Hyperparameter tuning is a tricky thing. The classical approach is a fixed parameter or a dynamic parameter in a fixed schedule. For example, step learning rate schedule comes from the idea that at first we can set a large learning rate because the loss is large, and at the end of the training we need to decrease the learning rate to make it converge at a better place instead of oscillation. However, it is heuristic, and it is kind of like handcrafted feature engineering when we are using SVM for classification. I mean, these kinds of methods don't dive into a certain step of parameter update. They are useful but general methods, and as far as I know, we don't develop a fine-grained method that gives the most suitable hyperparameters for different values of the model's parameters for each step of updating during training.
+    </p>
+
+    <h2>Implementation with math</h2>
+
+    <p>
+        The <strong>assumption</strong> is the loss curve \(L(\theta)\) is similar for a model with different data set: \(L( \theta , \mathcal{D}_{i}) \approx L( \theta , \mathcal{D} _{j})\) , where \(\theta\) is a model and \(\mathcal{D}_i, \mathcal{D}_j\) are different datasets used for training model \(\theta\).
+        Let's consider a quadratic model \(f(\mathbf{\theta}, \mathbf{x}) = x_1 * \theta_1^2 + x_2 * \theta_2^2\) in a regression task, where \(\mathbf{x} = [x_1,x_2]\) is a data sample in data set \(\mathcal{D}\).
+        For each dataset \(\mathcal{D}\), it can be decomposed into a list of batches of data blocks: \([d_1, d_2, ... ]\).
+        For each sample \((\mathbf{x_i}, y_i) \in d_k\), it makes an expression of L2 loss:
+    </p>
+
+    \[
+        L(\theta, \mathbf{x_i}) = (x_{i1} * \theta_1^2 + x_{i2} * \theta_2^2 - y_i)^2
+    \]
+
+    <p>
+        For \(d_k\), there are \(|d_k|\) equations, which is the approximation of the \(|\mathcal{D}|\) equations. Here the approximation means the scatter plot of \(|d_k|\) losses in the \(|\theta|\) dimension space(here is 2) looks similar to the one of \(|\mathcal{D}|\) losses.
+    </p>
+
+    <h3>The design of state</h3>
+
+    <p>
+        For each \(|d_k|\) equations, they give one averaged loss \(\hat L(\theta, d_k)\). There are \(\frac{|\mathcal{D}|}{|d_k|}\) averaged losses: \([\hat L(\theta, d_1), \hat L(\theta, d_2), ...]\). Here comes a natural analogy: we regard the list of losses as a state trajectory(here we discard action at first):
+    </p>
+
+    \[
+        \tau = [s_0, s_1, ... ] = [\hat L(\theta, d_1), \hat L(\theta, d_2), ...]
+    \]
+
+    <p>
+        but obviously it needs improvement, because there many place model is at with same loss, an example is the loss contour plot in quadratic form. As we know, the state \(s_t\) for LLM is the prompt plus all tokens it has generated by time step \(t\): \(s_t = [\text{word}_1,\text{word}_2,...]\), which means the "length" of the state for an LLM at each time step increases linearly, so I would like to borrow the idea. We design the state \(s_t\) of loss as a sequence: \(s_t = [\hat L(\theta, d_1), \hat L(\theta, d_2), ..., \hat L(\theta, d_t)]\), which mitigates the position ambiguity(different value set of parameters of model might have the same loss value).
+    </p>
+
+    <h3>The design of action</h3>
+
+    <p>
+        It's obvious the action is the value of learning rate and can be done by a linear model:
+    </p>
+
+    \[
+        \pi(a|\vec s) = \vec w^T \vec s
+    \]
+
+    <h3>The design of reward</h3>
+
+    <p>
+        We can design the reward function as such: after doing action \(a_t\), parameter \(\theta_t\) at step \(t\) is updated into \(\theta_{t+1}\) by backpropagation, and we use the new parameter with a new batch of data \(d_{t+1}\) to do forward propagation to get a loss \(\hat L(\theta_{t+1}, d_{t+1})\), And we compare it with the loss of last step \(\hat L(\theta_{t}, d_{t})\) , If the loss decreases, it is a positive signal, otherwise, it would be penalized.
+    </p>
+
+    \[
+        R_{t+1} = -(\hat L(\theta, d_{t+1}) - \hat L(\theta, d_t))
+    \]
+
+    <p>
+        After proper training, the agent can give customized value of hyperparameters during each step of training.
+    </p>
+</body>
+
+</html>
