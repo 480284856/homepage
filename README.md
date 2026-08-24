@@ -31,6 +31,7 @@
 
 # Diary
 
+- [2026-08-24-RL-AutoDQN](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/AutoDQN/AutoDQN.html)
 - [2026-07-28-RL-RL-based Live Hyperparameter Tuning](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/RL-based%20Live%20Hyperparameter%20Tuning/RL-based%20Live%20Hyperparameter%20Tuning.html)
 - [2026-06-11-DL-Accelerating Optimization: Combining Newton's Method with SGD](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/combining%20newtons%20method%20and%20sgd/combining%20newtons%20method%20and%20sgd.html)
 - [2026-06-10-DL-Unbinding the Attention Budget: Rethinking Softmax in Self-Attention](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/Blog/unbinding%20the%20attention%20budget/unbinding%20the%20attention%20budget.html)

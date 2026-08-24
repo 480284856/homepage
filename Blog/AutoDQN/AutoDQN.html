@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoDQN</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h3 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            text-align: justify;
+        }
+
+        blockquote {
+            margin: 20px 40px;
+            padding-left: 20px;
+            border-left: 4px solid #ccc;
+        }
+
+        ol,
+        ul {
+            padding-left: 30px;
+        }
+
+        li {
+            margin-bottom: 20px;
+        }
+
+        figure {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        img {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+        }
+
+        figcaption {
+            max-width: 600px;
+            margin: 10px auto 0;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+    </style>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            }
+        };
+        const mathJaxScript = document.createElement('script');
+        mathJaxScript.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+        document.head.appendChild(mathJaxScript);
+    </script>
+</head>
+
+<body>
+    <h1>AutoDQN</h1>
+
+    <h3>The origin</h3>
+
+    <p>
+        In reinforcement learning, the generalization ability might mean taking reasonable action given a state that the agent has never seen before. The only information the agent receives is the information of states. Therefore, the prerequisite of generalization is that there is a regularity between states, which means there is some common, general pattern between states. In this case, after training on many states, the agent could have the ability to extract the general regularity within states. This provides some possibility to achieve generalization<sup><a href="#reference-1">[1]</a></sup>.
+    </p>
+
+    <blockquote>
+        So, the prerequisite should be the observations contain such information so that the agent could extract to make decision. If there is not useful information within the observation, we shouldn't blame the algorithm of agents.
+    </blockquote>
+
+    <p>There are two kinds of regularity in reinforcement learning:</p>
+
+    <ol>
+        <li>
+            The regularity within value functions<sup><a href="#reference-1">[1]</a></sup>:
+            <p>
+                In the space of \(V(s)\), within a specific area of states, the state values or state-action values of those states are similar with each other.
+            </p>
+            <figure>
+                <img src="assets/autodqn-5.jpg" alt="Description" width="400" height="400">
+                <figcaption>Figure 1: Draft for the mapping from state space to state value space. within a specific area of states, like S1, S2 and S3, the estimation of state value for each group of similar states are "-1", "0.4", "1" respectively. One can think of there is a 3D curve of state value function containing these three flat area.</figcaption>
+            </figure>
+        </li>
+
+        <li>
+            The regularity within policies<sup><a href="#reference-1">[1]</a></sup>.
+            <p>
+                In the space of \(\pi^*(s)\), within a specific area of states, the optimal actions from those states might be similar or even the same with each other. For example, within a specific area of states, the actions might all be "Move right".
+            </p>
+            <figure>
+                <img src="assets/autodqn-4.jpg" alt="Description" width="400" height="400">
+                <figcaption>Figure 2: Draft for the mapping from state space to optimal policy space. within a specific area of states, like S1, S2 and S3, the optimal action for each group of similar states are "right", "up", "left" respectively. One can think of there is a 3D curve of optimal action, where each point has a discrete value, like "up", containing these three flat areas.</figcaption>
+            </figure>
+        </li>
+    </ol>
+
+    <p>
+        Based on that, the next thing to do is make agent learn to make decision based on those common patterns. In stead of heavily on particular patterns which only appear exclusively in data points.
+    </p>
+
+    <p>
+        In order to enforce agent to make decision based on general pattern, or plus little pattern specialized for a small group of data points of trajectories, we can use AutoEncoder, which is an in-born general pattern extractor.
+    </p>
+
+    <h3>Implementation</h3>
+
+    <p>What below is the implementation detail:<br>
+        Let's use super mario as an example.</p>
+
+    <p>So far I think we could have such loss functions:</p>
+
+    <ul>
+        <li>
+            Reconstruction loss:
+            <p>To force encoder learn to extract compressed representation(or critical information for a screenshot).</p>
+            <figure>
+                <img src="assets/autodqn-1.jpg" alt="Description" width="400" height="200">
+                <figcaption>Figure 3: Diagram of reconstruction loss. Give an image, reconstruct the image as much as possible.</figcaption>
+            </figure>
+        </li>
+
+        <li>
+            Similarity Loss:
+            <p>
+                For those different screenshots but with the same optimal action, their corresponding outputs from the encoder should be similar. This idea corresponds to different but similar states might have same optimal policy.
+            </p>
+            <figure>
+                <img src="assets/autodqn-2.jpg" alt="Description" width="400" height="300">
+                <figcaption>Figure 4: A diagram for the idea of similarity loss. In the two screenshots, there are obstacles in front of the characters, so the optimal actions are "up", so there compressed latent representation should be similar, for example have a high cosine similarity score.</figcaption>
+            </figure>
+        </li>
+    </ul>
+
+    <p>
+        After training of AutoEncoder, We only keep Encoder. We then fix the encoder(or not), plug in a simple head, like MLP layer, as actor, then we perform regular RL training pipeline like PPO. In this setting, the MLP could only utilize the general pattern to make decision, which might improve the generalization ability.
+    </p>
+
+    <img src="assets/autodqn-3.jpg" alt="Description">
+
+    <h3>Reference</h3>
+
+    <p id="reference-1">
+        [1]: A.-M. Farahmand, D. Precup, A. M. S. Barreto, and M. Ghavamzadeh, “Classification-Based Approximate Policy Iteration,” <em>IEEE Transactions on Automatic Control</em>, vol. 60, no. 11, pp. 2989–2993, Nov. 2015. <a href="https://doi.org/10.1109/TAC.2015.2418411">doi:10.1109/TAC.2015.2418411</a>.
+    </p>
+</body>
+
+</html>
