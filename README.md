@@ -20,6 +20,8 @@
 
 # AIFramework
 
+- 27/08/2026
+  - [Backpropagation of layer normalization](AIFramework/LayerNorm/LayerNorm.pdf)
 - 29/05/2026
   - [Understand the addition of Backwardpropagation via Multi-variable Chain Rule](https://htmlpreview.github.io/?https://github.com/480284856/homepage/blob/main/AIFramework/html/Understand%20the%20addition%20of%20Backwardpropagation%20via%20Multi-variable%20Chain%20Rule.html)
 - 05/15/2026
